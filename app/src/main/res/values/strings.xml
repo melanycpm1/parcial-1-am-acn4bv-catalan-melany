@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">wikison</string>
+    <string name="titulo_personajes">Personajes</string>
+    <string name="titulo_lugares">Lugares</string>
+    <string name="titulo_temporadas">Temporadas</string>
+    <string name="titulo_Creadores">Creadores</string>
+    <string name="ver_mas">ver más</string>
 </resources>
