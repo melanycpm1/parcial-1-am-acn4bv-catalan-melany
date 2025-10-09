@@ -1,13 +1,32 @@
 package com.example.wikison;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
+
+    LinearLayout contenedorEdittexts, contenedorPersonajes;
+    Button btnAgregar;
+    String[] hints = {"Nombre", "Rol", "Característica", "URL", "Frase"};
+    JSONArray personajes;
+    int cantidadVisible = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,31 +34,147 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        LinearLayout contenedor = findViewById(R.id.contenedor_edittexts);
+        contenedorEdittexts = findViewById(R.id.contenedor_edittexts);
+        contenedorPersonajes = findViewById(R.id.contenedor_personajes);
+        btnAgregar = findViewById(R.id.btn_agregar);
 
-        // Lista de textos diferentes
-        String[] hints = {"Nombre", "rol", "caracteristica","url", "frase"};
-
+        // 🔹 Crea dinámicamente los EditText
         for (String hint : hints) {
             EditText editText = new EditText(this);
-
-            // Atributos iguales a los del XML original
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    400, //
-                    200
+                    600,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
             );
             params.setMargins(0, 25, 0, 0);
             editText.setLayoutParams(params);
-
             editText.setHint(hint);
             editText.setBackgroundResource(R.drawable.edittext_border);
             editText.setPadding(16, 16, 16, 16);
             editText.setTextSize(16);
-            editText.setTypeface(editText.getTypeface(), android.graphics.Typeface.BOLD);
             editText.setTextColor(getColor(android.R.color.black));
+            contenedorEdittexts.addView(editText);
+        }
 
-            // Agregamos al contenedor
-            contenedor.addView(editText);
+
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://api.npoint.io/7b58b3db38938174a228");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+
+                reader.close();
+                JSONObject json = new JSONObject(jsonBuilder.toString());
+                personajes = json.getJSONArray("personajes");
+
+                runOnUiThread(this::mostrarPersonajesIniciales);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        btnAgregar.setOnClickListener(v -> mostrarMasPersonajes());
+    }
+
+    private void mostrarPersonajesIniciales() {
+        try {
+            contenedorPersonajes.removeAllViews();
+            for (int i = 0; i < Math.min(2, personajes.length()); i++) {
+                agregarCard(personajes.getJSONObject(i));
+            }
+
+            if (personajes.length() > 2) {
+                Button btnVerMas = new Button(this);
+                btnVerMas.setText("Ver más");
+                btnVerMas.setTextSize(18);
+                btnVerMas.setBackgroundTintList(getColorStateList(R.color.azul));
+                btnVerMas.setTextColor(getColor(android.R.color.white));
+                btnVerMas.setOnClickListener(v -> mostrarMasPersonajes());
+                contenedorPersonajes.addView(btnVerMas);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void mostrarMasPersonajes() {
+        try {
+            contenedorPersonajes.removeAllViews();
+            for (int i = 0; i < personajes.length(); i++) {
+                agregarCard(personajes.getJSONObject(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void agregarCard(JSONObject personaje) {
+        try {
+            CardView card = new CardView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 20, 0, 0);
+            card.setLayoutParams(params);
+            card.setRadius(25f);
+            card.setCardElevation(8f);
+            card.setUseCompatPadding(true);
+            card.setContentPadding(16, 16, 16, 16);
+
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.setPadding(8, 8, 8, 8);
+
+            ImageView imagen = new ImageView(this);
+            int resID = getResources().getIdentifier(
+                    personaje.getString("img").replace(".jpg", ""),
+                    "drawable",
+                    getPackageName()
+            );
+            imagen.setImageResource(resID);
+            LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
+            imagen.setLayoutParams(imgParams);
+
+            LinearLayout textoLayout = new LinearLayout(this);
+            textoLayout.setOrientation(LinearLayout.VERTICAL);
+            textoLayout.setPadding(16, 0, 0, 0);
+
+            TextView nombre = new TextView(this);
+            nombre.setText(personaje.getString("nombre"));
+            nombre.setTextSize(18);
+            nombre.setTextColor(getColor(android.R.color.black));
+            nombre.setTypeface(null, android.graphics.Typeface.BOLD);
+
+            TextView rol = new TextView(this);
+            rol.setText("Rol: " + personaje.getString("rol"));
+            rol.setTextSize(16);
+
+            TextView caracteristica = new TextView(this);
+            caracteristica.setText(personaje.getString("caracteristica"));
+            caracteristica.setTextSize(14);
+
+            textoLayout.addView(nombre);
+            textoLayout.addView(rol);
+            textoLayout.addView(caracteristica);
+
+            layout.addView(imagen);
+            layout.addView(textoLayout);
+            card.addView(layout);
+
+            contenedorPersonajes.addView(card);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
