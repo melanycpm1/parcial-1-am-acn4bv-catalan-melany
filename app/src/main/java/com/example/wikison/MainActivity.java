@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import androidx.cardview.widget.CardView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -33,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout contenedorLugares;
     private Button btnAgregarLugar;
     private JSONArray lugares;
+    // ---------- NAVBAR ----------
+    private ImageView imgMenu;
+    private LinearLayout horizontalNavbar;
+    private Button btnPersonajes;
+    private Button btnLugares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // -------------------- INICIALIZAR VISTAS --------------------
         contenedorEdittextsLugares = findViewById(R.id.contenedorEdittextsLugares);
         contenedorLugares = findViewById(R.id.contenedorLugares);
         btnAgregarLugar = findViewById(R.id.btnAgregarLugar);
@@ -48,10 +56,16 @@ public class MainActivity extends AppCompatActivity {
         contenedorEdittexts = findViewById(R.id.contenedor_edittexts);
         contenedorPersonajes = findViewById(R.id.contenedor_personajes);
         btnAgregar = findViewById(R.id.btn_agregar);
+        personajes = new JSONArray();
+
+        imgMenu = findViewById(R.id.img_menu);
+        horizontalNavbar = findViewById(R.id.horizontal_navbar);
+        btnPersonajes = findViewById(R.id.btn_personajes);
+        btnLugares = findViewById(R.id.btn_lugares);
 
         String[] hintsLugares = {"Nombre del lugar", "URL de imagen"};
 
-        // EditTexts para lugares
+        // -------------------- EDITTEXTS LUGARES --------------------
         for (String hint : hintsLugares) {
             EditText edit = new EditText(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -64,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittextsLugares.addView(edit);
         }
 
-        // Botón agregar lugar (solo agrega al JSONArray)
+        // -------------------- BOTÓN AGREGAR LUGAR --------------------
         btnAgregarLugar.setOnClickListener(v -> {
             try {
                 String nombre = ((EditText) contenedorEdittextsLugares.getChildAt(0)).getText().toString();
@@ -76,19 +90,16 @@ public class MainActivity extends AppCompatActivity {
                 lugar.put("nombre", nombre);
                 lugar.put("img", url);
 
-                // Solo agregamos al JSONArray
                 lugares.put(lugares.length(), lugar);
 
-                // Limpiar campos
                 ((EditText) contenedorEdittextsLugares.getChildAt(0)).setText("");
                 ((EditText) contenedorEdittextsLugares.getChildAt(1)).setText("");
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
 
-        // EditTexts para personajes
+        // -------------------- EDITTEXTS PERSONAJES --------------------
         for (String hint : hints) {
             EditText editText = new EditText(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -102,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittexts.addView(editText);
         }
 
-        // Botón agregar personaje (solo agrega al JSONArray)
+        // -------------------- BOTÓN AGREGAR PERSONAJE --------------------
         btnAgregar.setOnClickListener(v -> {
             try {
                 String nombre = ((EditText) contenedorEdittexts.getChildAt(0)).getText().toString();
@@ -120,20 +131,37 @@ public class MainActivity extends AppCompatActivity {
                 personaje.put("img", url);
                 personaje.put("frase", frase);
 
-                // Solo agregamos al JSONArray
                 personajes.put(personajes.length(), personaje);
 
-                // Limpiar campos
                 for (int i = 0; i < contenedorEdittexts.getChildCount(); i++) {
                     ((EditText) contenedorEdittexts.getChildAt(i)).setText("");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
 
-        // Hilo para cargar personajes y lugares desde API
+        // -------------------- TOGGLE NAVBAR --------------------
+        imgMenu.setOnClickListener(v -> {
+            if (horizontalNavbar.getVisibility() == View.GONE) {
+                horizontalNavbar.setVisibility(View.VISIBLE);
+            } else {
+                horizontalNavbar.setVisibility(View.GONE);
+            }
+        });
+
+        // -------------------- BOTONES PERSONAJES / LUGARES --------------------
+        btnPersonajes.setOnClickListener(v -> {
+            contenedorPersonajes.setVisibility(View.VISIBLE);
+            contenedorLugares.setVisibility(View.GONE);
+        });
+
+        btnLugares.setOnClickListener(v -> {
+            contenedorPersonajes.setVisibility(View.GONE);
+            contenedorLugares.setVisibility(View.VISIBLE);
+        });
+
+        // -------------------- CARGA DESDE API --------------------
         new Thread(() -> {
             try {
                 URL url = new URL("https://api.npoint.io/7b58b3db38938174a228");

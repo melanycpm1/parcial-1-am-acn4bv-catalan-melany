@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".MainActivity">
+        android:orientation="vertical">
 
+        <!-- NAVBAR SUPERIOR -->
         <LinearLayout
             android:id="@+id/navbar"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/amarrilo"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:paddingEnd="16dp">
 
             <ImageView
                 android:id="@+id/img_logo"
@@ -49,6 +44,42 @@
 
         </LinearLayout>
 
+        <!-- NAVBAR HORIZONTAL OCULTO -->
+        <LinearLayout
+            android:id="@+id/horizontal_navbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/amarrilo"
+            android:visibility="gone"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <Button
+                android:id="@+id/btn_personajes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Personajes"
+                android:textColor="@color/azul"
+                android:background="@null"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="8dp"/>
+
+            <Button
+                android:id="@+id/btn_lugares"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lugares"
+                android:textColor="@color/azul"
+                android:background="@null"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="8dp"/>
+        </LinearLayout>
+
+        <!-- TÍTULO PERSONAJES -->
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
@@ -57,22 +88,19 @@
             android:textColor="@color/azul"
             android:textSize="38sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/navbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp" />
 
+        <!-- Contenedor de EditTexts de Personajes -->
         <LinearLayout
             android:id="@+id/contenedor_edittexts"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="6dp"
-            app:layout_constraintTop_toBottomOf="@id/textView4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:padding="6dp" />
 
+        <!-- Botón Agregar Personaje -->
         <Button
             android:id="@+id/btn_agregar"
             android:layout_width="wrap_content"
@@ -83,24 +111,18 @@
             android:padding="10dp"
             android:backgroundTint="@color/azul"
             android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/contenedor_edittexts"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp" />
 
+        <!-- Contenedor de Cards de Personajes -->
         <LinearLayout
             android:id="@+id/contenedor_personajes"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_agregar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"/>
+            android:padding="16dp" />
 
-
+        <!-- TÍTULO LUGARES -->
         <TextView
             android:id="@+id/titulo_lugares"
             android:layout_width="wrap_content"
@@ -109,24 +131,19 @@
             android:textColor="@color/azul"
             android:textSize="38sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/contenedor_personajes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp" />
 
         <!-- Contenedor de EditTexts de Lugares -->
         <LinearLayout
             android:id="@+id/contenedorEdittextsLugares"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="6dp"
-            app:layout_constraintTop_toBottomOf="@id/titulo_lugares"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:padding="6dp" />
 
-        <!--Botón de agregar Lugar -->
+        <!-- Botón Agregar Lugar -->
         <Button
             android:id="@+id/btnAgregarLugar"
             android:layout_width="wrap_content"
@@ -137,34 +154,25 @@
             android:padding="10dp"
             android:backgroundTint="@color/azul"
             android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/contenedorEdittextsLugares"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp" />
 
-        <!-- Contenedor donde se agregan los Lugares -->
+        <!-- Contenedor de Cards de Lugares -->
         <LinearLayout
             android:id="@+id/contenedorLugares"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/btnAgregarLugar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            android:padding="16dp" />
 
-
+        <!-- FOOTER -->
         <LinearLayout
             android:id="@+id/footer"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/amarrilo"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/contenedorLugares"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp">
 
             <TextView
@@ -175,8 +183,7 @@
                 android:textColor="@color/azul"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
-
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </ScrollView>
