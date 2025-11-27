@@ -100,6 +100,61 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"/>
 
+
+        <TextView
+            android:id="@+id/titulo_lugares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lugares"
+            android:textColor="@color/azul"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/contenedor_personajes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <!-- Contenedor de EditTexts de Lugares -->
+        <LinearLayout
+            android:id="@+id/contenedorEdittextsLugares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="6dp"
+            app:layout_constraintTop_toBottomOf="@id/titulo_lugares"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!--Botón de agregar Lugar -->
+        <Button
+            android:id="@+id/btnAgregarLugar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar Lugar"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:backgroundTint="@color/azul"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/contenedorEdittextsLugares"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <!-- Contenedor donde se agregan los Lugares -->
+        <LinearLayout
+            android:id="@+id/contenedorLugares"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/btnAgregarLugar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+
         <LinearLayout
             android:id="@+id/footer"
             android:layout_width="0dp"
@@ -107,7 +162,7 @@
             android:background="@color/amarrilo"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/contenedor_personajes"
+            app:layout_constraintTop_toBottomOf="@id/contenedorLugares"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp">
