@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittextsLugares.addView(edit);
         }
 
-        // Botón agregar lugar
+        // Botón agregar lugar (solo agrega al JSONArray)
         btnAgregarLugar.setOnClickListener(v -> {
             try {
                 String nombre = ((EditText) contenedorEdittextsLugares.getChildAt(0)).getText().toString();
@@ -76,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
                 lugar.put("nombre", nombre);
                 lugar.put("img", url);
 
+                // Solo agregamos al JSONArray
                 lugares.put(lugares.length(), lugar);
-                agregarCardLugar(lugar);
 
+                // Limpiar campos
                 ((EditText) contenedorEdittextsLugares.getChildAt(0)).setText("");
                 ((EditText) contenedorEdittextsLugares.getChildAt(1)).setText("");
 
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittexts.addView(editText);
         }
 
-        // Botón agregar personaje
+        // Botón agregar personaje (solo agrega al JSONArray)
         btnAgregar.setOnClickListener(v -> {
             try {
                 String nombre = ((EditText) contenedorEdittexts.getChildAt(0)).getText().toString();
@@ -119,9 +120,10 @@ public class MainActivity extends AppCompatActivity {
                 personaje.put("img", url);
                 personaje.put("frase", frase);
 
+                // Solo agregamos al JSONArray
                 personajes.put(personajes.length(), personaje);
-                agregarCardPersonaje(personaje);
 
+                // Limpiar campos
                 for (int i = 0; i < contenedorEdittexts.getChildCount(); i++) {
                     ((EditText) contenedorEdittexts.getChildAt(i)).setText("");
                 }
