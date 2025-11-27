@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.view.Gravity;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -135,6 +136,10 @@ public class MainActivity extends AppCompatActivity {
             layout.setOrientation(LinearLayout.HORIZONTAL);
             layout.setPadding(8, 8, 8, 8);
 
+            //Esto alinea TODO
+            layout.setGravity(Gravity.CENTER_VERTICAL);
+
+            // img
             ImageView imagen = new ImageView(this);
             int resID = getResources().getIdentifier(
                     personaje.getString("img").replace(".jpg", ""),
@@ -145,9 +150,15 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
             imagen.setLayoutParams(imgParams);
 
+            // texto
             LinearLayout textoLayout = new LinearLayout(this);
             textoLayout.setOrientation(LinearLayout.VERTICAL);
             textoLayout.setPadding(16, 0, 0, 0);
+
+            // Peso para que ocupe  el espacio y NO empuje al icono
+            LinearLayout.LayoutParams textoParams =
+                    new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+            textoLayout.setLayoutParams(textoParams);
 
             TextView nombre = new TextView(this);
             nombre.setText(personaje.getString("nombre"));
@@ -167,8 +178,22 @@ public class MainActivity extends AppCompatActivity {
             textoLayout.addView(rol);
             textoLayout.addView(caracteristica);
 
+            //ICONO ELIMINAR
+            ImageView eliminar = new ImageView(this);
+            eliminar.setImageResource(R.drawable.delete);
+
+            LinearLayout.LayoutParams eliminarParams =
+                    new LinearLayout.LayoutParams(80, 80);
+            eliminarParams.setMargins(40, 0, 0, 0);
+            eliminar.setLayoutParams(eliminarParams);
+            eliminar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+            eliminar.setOnClickListener(view -> contenedorPersonajes.removeView(card));
+
             layout.addView(imagen);
             layout.addView(textoLayout);
+            layout.addView(eliminar);
+
             card.addView(layout);
 
             contenedorPersonajes.addView(card);
