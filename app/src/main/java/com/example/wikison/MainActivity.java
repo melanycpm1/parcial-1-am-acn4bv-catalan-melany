@@ -4,13 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.Gravity;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout contenedorEdittextsLugares;
     private LinearLayout contenedorLugares;
-
     private Button btnAgregarLugar;
-
     private JSONArray lugares;
 
     @Override
@@ -46,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
         contenedorEdittextsLugares = findViewById(R.id.contenedorEdittextsLugares);
         contenedorLugares = findViewById(R.id.contenedorLugares);
         btnAgregarLugar = findViewById(R.id.btnAgregarLugar);
-
-        lugares = new JSONArray(); // Inicializo vacío para agregar manualmente
+        lugares = new JSONArray();
 
         contenedorEdittexts = findViewById(R.id.contenedor_edittexts);
         contenedorPersonajes = findViewById(R.id.contenedor_personajes);
@@ -55,13 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
         String[] hintsLugares = {"Nombre del lugar", "URL de imagen"};
 
-        // Crear EditTexts para agregar lugares
+        // EditTexts para lugares
         for (String hint : hintsLugares) {
             EditText edit = new EditText(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    600,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 25, 0, 0);
             edit.setLayoutParams(params);
             edit.setHint(hint);
@@ -71,23 +64,21 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittextsLugares.addView(edit);
         }
 
-        // Botón agregar lugar manualmente
+        // Botón agregar lugar
         btnAgregarLugar.setOnClickListener(v -> {
             try {
                 String nombre = ((EditText) contenedorEdittextsLugares.getChildAt(0)).getText().toString();
                 String url = ((EditText) contenedorEdittextsLugares.getChildAt(1)).getText().toString();
 
-                if (url.isEmpty()) return; // No agregar si no hay imagen
+                if (url.isEmpty()) return;
 
                 JSONObject lugar = new JSONObject();
                 lugar.put("nombre", nombre);
                 lugar.put("img", url);
 
                 lugares.put(lugares.length(), lugar);
-
                 agregarCardLugar(lugar);
 
-                // Limpiar campos
                 ((EditText) contenedorEdittextsLugares.getChildAt(0)).setText("");
                 ((EditText) contenedorEdittextsLugares.getChildAt(1)).setText("");
 
@@ -96,13 +87,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 🔹 EditTexts personajes (sin cambios)
+        // EditTexts para personajes
         for (String hint : hints) {
             EditText editText = new EditText(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    600,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 25, 0, 0);
             editText.setLayoutParams(params);
             editText.setHint(hint);
@@ -113,7 +101,37 @@ public class MainActivity extends AppCompatActivity {
             contenedorEdittexts.addView(editText);
         }
 
-        // Hilo para obtener personajes y lugares desde la API
+        // Botón agregar personaje
+        btnAgregar.setOnClickListener(v -> {
+            try {
+                String nombre = ((EditText) contenedorEdittexts.getChildAt(0)).getText().toString();
+                String rol = ((EditText) contenedorEdittexts.getChildAt(1)).getText().toString();
+                String caracteristica = ((EditText) contenedorEdittexts.getChildAt(2)).getText().toString();
+                String url = ((EditText) contenedorEdittexts.getChildAt(3)).getText().toString();
+                String frase = ((EditText) contenedorEdittexts.getChildAt(4)).getText().toString();
+
+                if (url.isEmpty()) return;
+
+                JSONObject personaje = new JSONObject();
+                personaje.put("nombre", nombre);
+                personaje.put("rol", rol);
+                personaje.put("caracteristica", caracteristica);
+                personaje.put("img", url);
+                personaje.put("frase", frase);
+
+                personajes.put(personajes.length(), personaje);
+                agregarCardPersonaje(personaje);
+
+                for (int i = 0; i < contenedorEdittexts.getChildCount(); i++) {
+                    ((EditText) contenedorEdittexts.getChildAt(i)).setText("");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Hilo para cargar personajes y lugares desde API
         new Thread(() -> {
             try {
                 URL url = new URL("https://api.npoint.io/7b58b3db38938174a228");
@@ -144,19 +162,15 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }).start();
-
-        btnAgregar.setOnClickListener(v -> mostrarMasPersonajes());
     }
 
-    // --------------------------- LUGARES --------------------------------
-
+    // -------------------- LUGARES --------------------
     private void mostrarLugaresIniciales() {
         contenedorLugares.removeAllViews();
         try {
             int mostrar = Math.min(2, lugares.length());
             for (int i = 0; i < mostrar; i++) {
-                JSONObject lugar = lugares.getJSONObject(i);
-                agregarCardLugar(lugar);
+                agregarCardLugar(lugares.getJSONObject(i));
             }
 
             if (lugares.length() > 2) {
@@ -209,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
 
             String imgStr = lugar.optString("img", "");
             if (imgStr.startsWith("http://") || imgStr.startsWith("https://")) {
-                // Cargar imagen desde internet
                 new Thread(() -> {
                     try {
                         URL url = new URL(imgStr);
@@ -221,19 +234,14 @@ public class MainActivity extends AppCompatActivity {
                         is.close();
 
                         runOnUiThread(() -> imagen.setImageBitmap(bitmap));
-
                     } catch (Exception e) {
-                        Log.d("LUGAR", "Error cargando imagen de internet: " + e.getMessage());
+                        Log.d("LUGAR", "Error cargando imagen: " + e.getMessage());
                     }
                 }).start();
             } else {
-                // Intentar cargar imagen desde drawable
                 String nombreImagen = imgStr.replace(".jpg", "").toLowerCase().replace(" ", "_");
                 int resID = getResources().getIdentifier(nombreImagen, "drawable", getPackageName());
-                if (resID == 0) {
-                    // Si no hay imagen válida, no mostramos la card
-                    return;
-                }
+                if (resID == 0) return;
                 imagen.setImageResource(resID);
             }
 
@@ -250,11 +258,10 @@ public class MainActivity extends AppCompatActivity {
             nombre.setText(lugar.optString("nombre", "Sin nombre"));
             nombre.setTextSize(18);
             nombre.setTypeface(null, android.graphics.Typeface.BOLD);
-
             textoLayout.addView(nombre);
+
             layout.addView(textoLayout);
 
-            // Icono eliminar
             ImageView eliminar = new ImageView(this);
             eliminar.setImageResource(R.drawable.delete);
             LinearLayout.LayoutParams eliminarParams = new LinearLayout.LayoutParams(80, 80);
@@ -272,12 +279,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // --------------------------- PERSONAJES --------------------------------
+    // -------------------- PERSONAJES --------------------
     private void mostrarPersonajesIniciales() {
+        contenedorPersonajes.removeAllViews();
         try {
-            contenedorPersonajes.removeAllViews();
             for (int i = 0; i < Math.min(2, personajes.length()); i++) {
-                agregarCard(personajes.getJSONObject(i));
+                agregarCardPersonaje(personajes.getJSONObject(i));
             }
 
             if (personajes.length() > 2) {
@@ -296,17 +303,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mostrarMasPersonajes() {
+        contenedorPersonajes.removeAllViews();
         try {
-            contenedorPersonajes.removeAllViews();
             for (int i = 0; i < personajes.length(); i++) {
-                agregarCard(personajes.getJSONObject(i));
+                agregarCardPersonaje(personajes.getJSONObject(i));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void agregarCard(JSONObject personaje) {
+    private void agregarCardPersonaje(JSONObject personaje) {
         try {
             CardView card = new CardView(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -326,53 +333,68 @@ public class MainActivity extends AppCompatActivity {
             layout.setGravity(Gravity.CENTER_VERTICAL);
 
             ImageView imagen = new ImageView(this);
-            int resID = getResources().getIdentifier(
-                    personaje.getString("img").replace(".jpg", ""),
-                    "drawable",
-                    getPackageName()
-            );
-            if (resID != 0) imagen.setImageResource(resID);
-            else return; // Si no hay imagen en drawable, no mostramos la card
-
             LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
             imagen.setLayoutParams(imgParams);
+            imagen.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            String imgStr = personaje.optString("img", "");
+            if (imgStr.startsWith("http://") || imgStr.startsWith("https://")) {
+                new Thread(() -> {
+                    try {
+                        URL url = new URL(imgStr);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoInput(true);
+                        conn.connect();
+                        InputStream is = conn.getInputStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        is.close();
+
+                        runOnUiThread(() -> imagen.setImageBitmap(bitmap));
+                    } catch (Exception e) {
+                        Log.d("PERSONAJE", "Error cargando imagen: " + e.getMessage());
+                    }
+                }).start();
+            } else {
+                String nombreImagen = imgStr.replace(".jpg", "").toLowerCase().replace(" ", "_");
+                int resID = getResources().getIdentifier(nombreImagen, "drawable", getPackageName());
+                if (resID == 0) return;
+                imagen.setImageResource(resID);
+            }
+
+            layout.addView(imagen);
 
             LinearLayout textoLayout = new LinearLayout(this);
             textoLayout.setOrientation(LinearLayout.VERTICAL);
             textoLayout.setPadding(16, 0, 0, 0);
             LinearLayout.LayoutParams textoParams =
-                    new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+                    new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             textoLayout.setLayoutParams(textoParams);
 
             TextView nombre = new TextView(this);
-            nombre.setText(personaje.getString("nombre"));
+            nombre.setText(personaje.optString("nombre", "Sin nombre"));
             nombre.setTextSize(18);
-            nombre.setTextColor(getColor(android.R.color.black));
             nombre.setTypeface(null, android.graphics.Typeface.BOLD);
+            textoLayout.addView(nombre);
 
             TextView rol = new TextView(this);
-            rol.setText("Rol: " + personaje.getString("rol"));
+            rol.setText("Rol: " + personaje.optString("rol", ""));
             rol.setTextSize(16);
+            textoLayout.addView(rol);
 
             TextView caracteristica = new TextView(this);
-            caracteristica.setText(personaje.getString("caracteristica"));
+            caracteristica.setText(personaje.optString("caracteristica", ""));
             caracteristica.setTextSize(14);
-
-            textoLayout.addView(nombre);
-            textoLayout.addView(rol);
             textoLayout.addView(caracteristica);
+
+            layout.addView(textoLayout);
 
             ImageView eliminar = new ImageView(this);
             eliminar.setImageResource(R.drawable.delete);
-            LinearLayout.LayoutParams eliminarParams =
-                    new LinearLayout.LayoutParams(80, 80);
-            eliminarParams.setMargins(40, 0, 0, 0);
+            LinearLayout.LayoutParams eliminarParams = new LinearLayout.LayoutParams(80, 80);
+            eliminarParams.setMargins(16, 0, 0, 0);
             eliminar.setLayoutParams(eliminarParams);
             eliminar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            eliminar.setOnClickListener(view -> contenedorPersonajes.removeView(card));
-
-            layout.addView(imagen);
-            layout.addView(textoLayout);
+            eliminar.setOnClickListener(v -> contenedorPersonajes.removeView(card));
             layout.addView(eliminar);
 
             card.addView(layout);
