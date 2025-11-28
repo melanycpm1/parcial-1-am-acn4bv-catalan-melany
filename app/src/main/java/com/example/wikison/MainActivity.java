@@ -1,5 +1,6 @@
 package com.example.wikison;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 lugar.put("nombre", nombre);
                 lugar.put("img", url);
 
+                agregarCardLugar(lugar);
                 lugares.put(lugares.length(), lugar);
 
                 ((EditText) contenedorEdittextsLugares.getChildAt(0)).setText("");
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 personaje.put("frase", frase);
 
                 personajes.put(personajes.length(), personaje);
+                agregarCardPersonaje(personaje);
 
                 for (int i = 0; i < contenedorEdittexts.getChildCount(); i++) {
                     ((EditText) contenedorEdittexts.getChildAt(i)).setText("");
@@ -226,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    
 
     private void agregarCardLugar(JSONObject lugar) {
         try {
@@ -387,8 +392,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 String nombreImagen = imgStr.replace(".jpg", "").toLowerCase().replace(" ", "_");
                 int resID = getResources().getIdentifier(nombreImagen, "drawable", getPackageName());
-                if (resID == 0) return;
-                imagen.setImageResource(resID);
+                if (resID != 0) {
+                    imagen.setImageResource(resID);
+                }
             }
 
             layout.addView(imagen);
@@ -429,6 +435,32 @@ public class MainActivity extends AppCompatActivity {
 
             card.addView(layout);
             contenedorPersonajes.addView(card);
+
+            // ------------------ ABRIR DETALLE ------------------
+            card.setOnClickListener(v -> {
+    try {
+        Intent intent = new Intent(MainActivity.this, CardpersonajesActivity.class);
+        intent.putExtra("nombre", personaje.optString("nombre", ""));
+        intent.putExtra("rol", personaje.optString("rol", ""));
+        intent.putExtra("caracteristica", personaje.optString("caracteristica", ""));
+        intent.putExtra("img", personaje.optString("img", ""));
+
+        // Tomar todas las frases y mandarlas como String
+        JSONArray frasesArray = personaje.optJSONArray("frases");
+        String frasesConcatenadas = "";
+        if (frasesArray != null) {
+            for (int i = 0; i < frasesArray.length(); i++) {
+                frasesConcatenadas += frasesArray.getString(i);
+                if (i != frasesArray.length() - 1) frasesConcatenadas += "\n"; // salto de línea
+            }
+        }
+        intent.putExtra("frases", frasesConcatenadas);
+
+        startActivity(intent);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+});
 
         } catch (Exception e) {
             e.printStackTrace();

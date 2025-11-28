@@ -1,0 +1,80 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_general"
+    android:background="@color/gris_claro">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_card"
+            app:cardCornerRadius="@dimen/radio_card"
+            app:cardElevation="8dp"
+            android:background="@color/blanco">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_general"
+                android:gravity="center_horizontal">
+
+                <!-- Imagen -->
+                <ImageView
+                    android:id="@+id/imgPersonaje"
+                    android:layout_width="@dimen/image_size"
+                    android:layout_height="@dimen/image_size"
+                    android:scaleType="centerCrop"
+                    android:layout_marginBottom="@dimen/padding_general"
+                    android:background="@color/azul_claro"
+                    android:contentDescription="Imagen del personaje"
+                    android:clipToOutline="true"
+                    android:outlineProvider="background"/>
+
+                <!-- Nombre -->
+                <TextView
+                    android:id="@+id/tvNombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_large"
+                    android:textColor="@color/azul"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Rol -->
+                <TextView
+                    android:id="@+id/tvRol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/negro"
+                    android:layout_marginBottom="4dp"/>
+
+                <!-- Característica -->
+                <TextView
+                    android:id="@+id/tvCaracteristica"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_small"
+                    android:textColor="@color/gris"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Frase -->
+                <TextView
+                    android:id="@+id/tvFrase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_small"
+                    android:textColor="@color/amarrillo"
+                    android:gravity="center"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

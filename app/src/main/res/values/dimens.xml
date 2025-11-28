@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="card_padding">16dp</dimen>
-    <dimen name="card_margin_top">20dp</dimen>
-    <dimen name="imagen_card">120dp</dimen>
-    <dimen name="icono_eliminar">32dp</dimen>
-    <dimen name="espaciado_interno">8dp</dimen>
+    <dimen name="padding_general">16dp</dimen>
+    <dimen name="margin_card">12dp</dimen>
+    <dimen name="radio_card">20dp</dimen>
+    <dimen name="image_size">200dp</dimen>
+    <dimen name="text_large">24sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
+    <dimen name="text_small">16sp</dimen>
 </resources>
