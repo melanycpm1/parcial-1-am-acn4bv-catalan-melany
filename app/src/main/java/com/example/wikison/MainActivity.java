@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnAgregar;
     String[] hints = {"Nombre", "Rol", "Característica", "URL", "Frase"};
     JSONArray personajes;
+    TextView tituloPersonajes;
+    TextView tituloLugares;
 
     // Firebase
     private FirebaseAuth auth;
@@ -120,7 +122,22 @@ public class MainActivity extends AppCompatActivity {
 
         personajes = new JSONArray();
         lugares = new JSONArray();
+        //
+        tituloPersonajes = findViewById(R.id.textView4);
+        tituloLugares = findViewById(R.id.titulo_lugares);
+        tituloLugares.setVisibility(View.GONE);
 
+        // MOSTRAR PERSONAJES POR DEFECTO
+        contenedorPersonajes.setVisibility(View.VISIBLE);
+        contenedorEdittexts.setVisibility(View.VISIBLE);
+        btnAgregar.setVisibility(View.VISIBLE);
+
+        contenedorLugares.setVisibility(View.GONE);
+        contenedorEdittextsLugares.setVisibility(View.GONE);
+        btnAgregarLugar.setVisibility(View.GONE);
+
+        tituloPersonajes.setVisibility(View.VISIBLE);
+        tituloLugares.setVisibility(View.GONE);
         // ---------- BIENVENIDA USUARIO ----------
         FirebaseUser currentUser = auth.getCurrentUser();
 
@@ -267,15 +284,32 @@ public class MainActivity extends AppCompatActivity {
 
         // -------------------- BOTONES PERSONAJES / LUGARES --------------------
         btnPersonajes.setOnClickListener(v -> {
+
             contenedorPersonajes.setVisibility(View.VISIBLE);
+            contenedorEdittexts.setVisibility(View.VISIBLE);
+            btnAgregar.setVisibility(View.VISIBLE);
+
             contenedorLugares.setVisibility(View.GONE);
+            contenedorEdittextsLugares.setVisibility(View.GONE);
+            btnAgregarLugar.setVisibility(View.GONE);
+
+            tituloPersonajes.setVisibility(View.VISIBLE);
+            tituloLugares.setVisibility(View.GONE);
         });
 
         btnLugares.setOnClickListener(v -> {
-            contenedorPersonajes.setVisibility(View.GONE);
-            contenedorLugares.setVisibility(View.VISIBLE);
-        });
 
+            contenedorPersonajes.setVisibility(View.GONE);
+            contenedorEdittexts.setVisibility(View.GONE);
+            btnAgregar.setVisibility(View.GONE);
+
+            contenedorLugares.setVisibility(View.VISIBLE);
+            contenedorEdittextsLugares.setVisibility(View.VISIBLE);
+            btnAgregarLugar.setVisibility(View.VISIBLE);
+
+            tituloPersonajes.setVisibility(View.GONE);
+            tituloLugares.setVisibility(View.VISIBLE);
+        });
         // -------------------- CARGA DESDE API --------------------
         new Thread(() -> {
             try {
