@@ -12,10 +12,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,16 +33,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
     LinearLayout contenedorEdittexts, contenedorPersonajes;
     Button btnAgregar;
     String[] hints = {"Nombre", "Rol", "Característica", "URL", "Frase"};
     JSONArray personajes;
 
+    // Firebase
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+
     private LinearLayout contenedorEdittextsLugares;
     private LinearLayout contenedorLugares;
     private Button btnAgregarLugar;
     private JSONArray lugares;
+    private String[] hintsLugares = {"Nombre del lugar", "URL de imagen"};
+
     // ---------- NAVBAR ----------
     private ImageView imgMenu;
     private LinearLayout horizontalNavbar;
@@ -46,30 +58,65 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
 
-        // -------------------- INICIALIZAR VISTAS --------------------
-        contenedorEdittextsLugares = findViewById(R.id.contenedorEdittextsLugares);
-        contenedorLugares = findViewById(R.id.contenedorLugares);
-        btnAgregarLugar = findViewById(R.id.btnAgregarLugar);
-        lugares = new JSONArray();
+        // ---------- INICIALIZAR FIREBASE ----------
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
+        // ---------- INICIALIZAR VISTAS ----------
         contenedorEdittexts = findViewById(R.id.contenedor_edittexts);
         contenedorPersonajes = findViewById(R.id.contenedor_personajes);
         btnAgregar = findViewById(R.id.btn_agregar);
-        personajes = new JSONArray();
-
+        contenedorEdittextsLugares = findViewById(R.id.contenedorEdittextsLugares);
+        contenedorLugares = findViewById(R.id.contenedorLugares);
+        btnAgregarLugar = findViewById(R.id.btnAgregarLugar);
         imgMenu = findViewById(R.id.img_menu);
         horizontalNavbar = findViewById(R.id.horizontal_navbar);
         btnPersonajes = findViewById(R.id.btn_personajes);
         btnLugares = findViewById(R.id.btn_lugares);
 
-        String[] hintsLugares = {"Nombre del lugar", "URL de imagen"};
+        personajes = new JSONArray();
+        lugares = new JSONArray();
+
+        // ---------- BIENVENIDA USUARIO ----------
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            db.collection("usuarios").document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String nombre = documentSnapshot.getString("nombre");
+                            Toast.makeText(MainActivity.this, "Bienvenido " + nombre, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+        // -------------------- EDITTEXTS PERSONAJES --------------------
+        for (String hint : hints) {
+            EditText edit = new EditText(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 25, 0, 0);
+            edit.setLayoutParams(params);
+            edit.setHint(hint);
+            edit.setBackgroundResource(R.drawable.edittext_border);
+            edit.setPadding(16, 16, 16, 16);
+            edit.setTextSize(16);
+            contenedorEdittexts.addView(edit);
+        }
 
         // -------------------- EDITTEXTS LUGARES --------------------
         for (String hint : hintsLugares) {
             EditText edit = new EditText(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
             params.setMargins(0, 25, 0, 0);
             edit.setLayoutParams(params);
             edit.setHint(hint);
@@ -78,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             edit.setTextSize(16);
             contenedorEdittextsLugares.addView(edit);
         }
+
 
         // -------------------- BOTÓN AGREGAR LUGAR --------------------
         btnAgregarLugar.setOnClickListener(v -> {

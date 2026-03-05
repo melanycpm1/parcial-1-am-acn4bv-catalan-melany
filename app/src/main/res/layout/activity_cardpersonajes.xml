@@ -5,26 +5,26 @@
     android:padding="@dimen/padding_general"
     android:background="@color/gris_claro">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+            android:id="@+id/cardPersonaje"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_card"
             app:cardCornerRadius="@dimen/radio_card"
             app:cardElevation="8dp"
+            android:layout_margin="@dimen/margin_card"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:background="@color/blanco">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_general"
-                android:gravity="center_horizontal">
+                android:padding="@dimen/padding_general">
 
                 <!-- Imagen -->
                 <ImageView
@@ -32,49 +32,67 @@
                     android:layout_width="@dimen/image_size"
                     android:layout_height="@dimen/image_size"
                     android:scaleType="centerCrop"
-                    android:layout_marginBottom="@dimen/padding_general"
-                    android:background="@color/azul_claro"
                     android:contentDescription="Imagen del personaje"
                     android:clipToOutline="true"
-                    android:outlineProvider="background"/>
+                    android:outlineProvider="background"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <!-- Nombre -->
                 <TextView
                     android:id="@+id/tvNombre"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_large"
                     android:textColor="@color/azul"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginTop="@dimen/padding_general"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/imgPersonaje"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <!-- Rol -->
                 <TextView
                     android:id="@+id/tvRol"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_medium"
                     android:textColor="@color/negro"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/tvNombre"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <!-- Característica -->
                 <TextView
                     android:id="@+id/tvCaracteristica"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_small"
                     android:textColor="@color/gris"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/tvRol"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <!-- Frase -->
                 <TextView
                     android:id="@+id/tvFrase"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_small"
                     android:textColor="@color/amarrillo"
-                    android:gravity="center"/>
-            </LinearLayout>
+                    android:gravity="center"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvCaracteristica"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
