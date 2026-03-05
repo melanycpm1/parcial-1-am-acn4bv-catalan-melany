@@ -31,6 +31,8 @@ import org.json.JSONException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     LinearLayout contenedorEdittexts, contenedorPersonajes;
@@ -53,6 +55,45 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout horizontalNavbar;
     private Button btnPersonajes;
     private Button btnLugares;
+    private void guardarLugaresFirestore() {
+
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser == null) return;
+
+        String userId = currentUser.getUid();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("lugares", lugares.toString());
+
+        db.collection("usuarios")
+                .document(userId)
+                .update(data)
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "Lugares guardados", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void guardarPersonajesFirestore() {
+
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) return;
+
+        String userId = user.getUid();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("personajes", personajes.toString());
+
+        db.collection("usuarios")
+                .document(userId)
+                .update(data)
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "Personajes guardados", Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error guardando", Toast.LENGTH_SHORT).show()
+                );
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +132,29 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
 
                         if (documentSnapshot.exists()) {
+                            String personajesGuardados = documentSnapshot.getString("personajes");
+                            String lugaresGuardados = documentSnapshot.getString("lugares");
 
                             String nombre = documentSnapshot.getString("nombre");
 
                             Toast.makeText(MainActivity.this,
                                     "Bienvenido " + nombre,
                                     Toast.LENGTH_SHORT).show();
+                            try {
+
+                                if (personajesGuardados != null) {
+                                    personajes = new JSONArray(personajesGuardados);
+                                    mostrarPersonajesIniciales();
+                                }
+
+                                if (lugaresGuardados != null) {
+                                    lugares = new JSONArray(lugaresGuardados);
+                                    mostrarLugaresIniciales();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         } else {
 
@@ -161,27 +219,13 @@ public class MainActivity extends AppCompatActivity {
 
                 agregarCardLugar(lugar);
                 lugares.put(lugares.length(), lugar);
-
+                guardarLugaresFirestore();
                 ((EditText) contenedorEdittextsLugares.getChildAt(0)).setText("");
                 ((EditText) contenedorEdittextsLugares.getChildAt(1)).setText("");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-
-        // -------------------- EDITTEXTS PERSONAJES --------------------
-        for (String hint : hints) {
-            EditText editText = new EditText(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 25, 0, 0);
-            editText.setLayoutParams(params);
-            editText.setHint(hint);
-            editText.setBackgroundResource(R.drawable.edittext_border);
-            editText.setPadding(16, 16, 16, 16);
-            editText.setTextSize(16);
-            editText.setTextColor(getColor(android.R.color.black));
-            contenedorEdittexts.addView(editText);
-        }
 
         // -------------------- BOTÓN AGREGAR PERSONAJE --------------------
         btnAgregar.setOnClickListener(v -> {
@@ -203,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
                 personajes.put(personajes.length(), personaje);
                 agregarCardPersonaje(personaje);
-
+                guardarPersonajesFirestore();
                 for (int i = 0; i < contenedorEdittexts.getChildCount(); i++) {
                     ((EditText) contenedorEdittexts.getChildAt(i)).setText("");
                 }
