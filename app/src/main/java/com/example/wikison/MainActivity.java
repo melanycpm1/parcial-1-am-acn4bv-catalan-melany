@@ -82,16 +82,36 @@ public class MainActivity extends AppCompatActivity {
 
         // ---------- BIENVENIDA USUARIO ----------
         FirebaseUser currentUser = auth.getCurrentUser();
+
         if (currentUser != null) {
             String userId = currentUser.getUid();
+
             db.collection("usuarios").document(userId)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
+
                         if (documentSnapshot.exists()) {
+
                             String nombre = documentSnapshot.getString("nombre");
-                            Toast.makeText(MainActivity.this, "Bienvenido " + nombre, Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(MainActivity.this,
+                                    "Bienvenido " + nombre,
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else {
+
+                            Toast.makeText(MainActivity.this,
+                                    "No existe usuario en Firestore",
+                                    Toast.LENGTH_SHORT).show();
                         }
+
                     });
+
+        } else {
+
+            Toast.makeText(MainActivity.this,
+                    "No hay usuario logueado",
+                    Toast.LENGTH_SHORT).show();
         }
 
         // -------------------- EDITTEXTS PERSONAJES --------------------
